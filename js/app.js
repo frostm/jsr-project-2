@@ -1,12 +1,19 @@
 /*
   Please add all Javascript code to this file.
 */
+
+
+
 var firstDropDown = document.querySelectorAll('li a')[1],
 	secondDropDown = document.querySelectorAll('li a')[2],
 	thirdDropDown = document.querySelectorAll('li a')[3],
-	headline = document.querySelectorAll('h3'),
-	category = document.querySelectorAll('h6');
-	img = document.querySelectorAll('.featuredImage img');
+	articles = document.querySelectorAll('.article')
+	headline = document.querySelectorAll('.articleContent h3'),
+	category = document.querySelectorAll('h6'),
+	img = document.querySelectorAll('.featuredImage img'),
+	popUpHeadline = document.querySelector('#popUp h1'),
+	popUpBlurb = document.querySelector('#popUp p');
+
 
 
 // click for NYT
@@ -34,6 +41,7 @@ firstDropDown.onclick = function() {
 	function nytContent () {
 
 	  var nytData = JSON.parse(xhttpNYT.responseText);
+	  console.log(nytData);
 
 	  for (i = 0; i < headline.length; i++) {
 	  	headline[i].innerText = nytData.results[i].title;
@@ -44,13 +52,16 @@ firstDropDown.onclick = function() {
 
 		// pop-up code will live here
 
-		$( 'h3' ).click(function() {
-			var	modal = document.querySelectorAll('#popUp .container');
-				container = document.getElementsByClassName('container');
 
-			alert('this should be a popup');
+$('h3').click(function(){
+	$('#popUp').removeClass("loader hidden");
+	popUpHeadline.innerText = nytData.results.title;
+});
 
-		});
+$('.closePopUp').click(function(){
+	$('#popUp').addClass("loader hidden");
+});
+
 
 	}
 
@@ -128,11 +139,24 @@ thirdDropDown.onclick = function() {
 	  var bbcData = JSON.parse(xhttpBBC.responseText);
 	  console.log(bbcData);
 
-	  for (i = 0; i < headline.length; i++) {
+	  for (i = 0; i < articles.length; i++) {
 	  	headline[i].innerText = bbcData.articles[i].title;
 	  	category[i].innerText = bbcData.articles[i].author;
 	  	img[i].src = bbcData.articles[i].urlToImage;
 	  }
+
+	  	$('h3').click(function( event ){
+			$('#popUp').removeClass("loader hidden");
+			var elementIndex = $( 'h3' ).index( this ) ;
+			popUpHeadline.innerText = bbcData.articles[elementIndex].title;
+			popUpBlurb.innerText = bbcData.articles[elementIndex].description;
+			var newURL = bbcData.articles[elementIndex].url;
+			$(".popUpAction").prop("href", newURL);
+		});
+
+		$('.closePopUp').click(function(){
+			$('#popUp').addClass("loader hidden");
+		});
 
 	}
 
@@ -141,4 +165,7 @@ thirdDropDown.onclick = function() {
 	nprContent();
 
 };
+
+
+
 
