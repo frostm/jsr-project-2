@@ -7,6 +7,7 @@
 var firstDropDown = document.querySelectorAll('li a')[1],
 	secondDropDown = document.querySelectorAll('li a')[2],
 	thirdDropDown = document.querySelectorAll('li a')[3],
+	dropDownTitle = document.querySelector('.container span'),
 	articles = document.querySelectorAll('.article')
 	headline = document.querySelectorAll('.articleContent h3'),
 	category = document.querySelectorAll('h6'),
@@ -14,6 +15,61 @@ var firstDropDown = document.querySelectorAll('li a')[1],
 	popUpHeadline = document.querySelector('#popUp h1'),
 	popUpBlurb = document.querySelector('#popUp p');
 
+
+window.onload = function() {
+// connect to NYT
+	
+	
+	var xhttpNYT = new XMLHttpRequest();
+	
+	xhttpNYT.open('GET', 'https://api.nytimes.com/svc/topstories/v2/home.json?api-key=6a54f099ac5a4e3783ffa599adcf005e');
+	xhttpNYT.send();
+
+	function errorHandler() {
+	  console.log('something went wrong');
+	}
+
+	xhttpNYT.onerror = errorHandler;
+	xhttpNYT.onload = nytContent;
+
+
+	// populate with NYT data
+
+	function nytContent () {
+
+	  var nytData = JSON.parse(xhttpNYT.responseText);
+	  dropDownTitle.innerText = 'New York Times';
+
+	  console.log(nytData);
+
+	  for (i = 0; i < headline.length; i++) {
+	  	headline[i].innerText = nytData.results[i].title;
+	  	category[i].innerText = nytData.results[i].subsection;
+	  	img[i].src = nytData.results[i].multimedia[i].url;
+	  }
+
+	  	$('h3').click(function( event ){
+			$('#popUp').removeClass("loader hidden");
+			var elementIndex = $( 'h3' ).index( this ) ;
+			popUpHeadline.innerText = nytData.results[elementIndex].title;
+			popUpBlurb.innerText = nytData.results[elementIndex].abstract;
+			var newURL = nytData.results[elementIndex].short_url;
+			$(".popUpAction").prop("href", newURL);
+		});
+
+		$('.closePopUp').click(function(){
+			$('#popUp').addClass("loader hidden");
+		});
+
+
+	}
+
+
+	//run function
+	nytContent();
+
+
+};
 
 
 // click for NYT
@@ -41,6 +97,8 @@ firstDropDown.onclick = function() {
 	function nytContent () {
 
 	  var nytData = JSON.parse(xhttpNYT.responseText);
+	  dropDownTitle.innerText = 'New York Times';
+
 	  console.log(nytData);
 
 	  for (i = 0; i < headline.length; i++) {
@@ -49,18 +107,18 @@ firstDropDown.onclick = function() {
 	  	img[i].src = nytData.results[i].multimedia[i].url;
 	  }
 
+	  	$('h3').click(function( event ){
+			$('#popUp').removeClass("loader hidden");
+			var elementIndex = $( 'h3' ).index( this ) ;
+			popUpHeadline.innerText = nytData.results[elementIndex].title;
+			popUpBlurb.innerText = nytData.results[elementIndex].abstract;
+			var newURL = nytData.results[elementIndex].short_url;
+			$(".popUpAction").prop("href", newURL);
+		});
 
-		// pop-up code will live here
-
-
-$('h3').click(function(){
-	$('#popUp').removeClass("loader hidden");
-	popUpHeadline.innerText = nytData.results.title;
-});
-
-$('.closePopUp').click(function(){
-	$('#popUp').addClass("loader hidden");
-});
+		$('.closePopUp').click(function(){
+			$('#popUp').addClass("loader hidden");
+		});
 
 
 	}
@@ -88,15 +146,15 @@ secondDropDown.onclick = function() {
 	}
 
 	xhttpDaily.onerror = errorHandler;
-	xhttpDaily.onload = nprContent;
+	xhttpDaily.onload = dailyContent;
 
 
 	// populate with DM data
 
-	function nprContent () {
+	function dailyContent () {
 
 	  var dailyData = JSON.parse(xhttpDaily.responseText);
-	  console.log(dailyData);
+	  dropDownTitle.innerText = 'Daily Mail';
 
 	  for (i = 0; i < headline.length; i++) {
 	  	headline[i].innerText = dailyData.articles[i].title;
@@ -104,11 +162,24 @@ secondDropDown.onclick = function() {
 	  	img[i].src = dailyData.articles[i].urlToImage;
 	  }
 
+	  	 $('h3').click(function( event ){
+			$('#popUp').removeClass("loader hidden");
+			var elementIndex = $( 'h3' ).index( this ) ;
+			popUpHeadline.innerText = dailyData.articles[elementIndex].title;
+			popUpBlurb.innerText = dailyData.articles[elementIndex].description;
+			var newURL = dailyData.articles[elementIndex].url;
+			$(".popUpAction").prop("href", newURL);
+		});
+
+		$('.closePopUp').click(function(){
+			$('#popUp').addClass("loader hidden");
+		});
+
 	}
 
 
 	//run function
-	nprContent();
+	dailyContent();
 
 };
 
@@ -129,15 +200,15 @@ thirdDropDown.onclick = function() {
 	}
 
 	xhttpBBC.onerror = errorHandler;
-	xhttpBBC.onload = nprContent;
+	xhttpBBC.onload = bbcContent;
 
 
 	// populate with DM data
 
-	function nprContent () {
+	function bbcContent () {
 
 	  var bbcData = JSON.parse(xhttpBBC.responseText);
-	  console.log(bbcData);
+	  dropDownTitle.innerText = 'BBC';
 
 	  for (i = 0; i < articles.length; i++) {
 	  	headline[i].innerText = bbcData.articles[i].title;
@@ -162,7 +233,7 @@ thirdDropDown.onclick = function() {
 
 
 	//run function
-	nprContent();
+	bbcContent();
 
 };
 
