@@ -2,7 +2,16 @@
   Please add all Javascript code to this file.
 */
 
+// loading screen
 
+$(window).load(function() {
+	$('#popUp').removeClass('hidden').delay(500).queue(function () {
+		$(this).addClass('hidden')
+	});
+});
+
+
+//define variables
 
 var firstDropDown = document.querySelectorAll('li a')[1],
 	secondDropDown = document.querySelectorAll('li a')[2],
@@ -13,8 +22,17 @@ var firstDropDown = document.querySelectorAll('li a')[1],
 	category = document.querySelectorAll('h6'),
 	img = document.querySelectorAll('.featuredImage img'),
 	popUpHeadline = document.querySelector('#popUp h1'),
-	popUpBlurb = document.querySelector('#popUp p');
+	popUpBlurb = document.querySelector('#popUp p'),
 
+
+// set logo to reload page
+
+$( "#logo" ).click(function() {
+	location.reload();
+});
+
+
+//load default content
 
 window.onload = function() {
 // connect to NYT
@@ -45,7 +63,7 @@ window.onload = function() {
 	  for (i = 0; i < headline.length; i++) {
 	  	headline[i].innerText = nytData.results[i].title;
 	  	category[i].innerText = nytData.results[i].subsection;
-	  	img[i].src = nytData.results[i].multimedia[i].url;
+	  	img[i].src = nytData.results[i].multimedia[0].url;
 	  }
 
 	  	$('h3').click(function( event ){
@@ -61,13 +79,10 @@ window.onload = function() {
 			$('#popUp').addClass("loader hidden");
 		});
 
-
 	}
-
 
 	//run function
 	nytContent();
-
 
 };
 
@@ -75,7 +90,6 @@ window.onload = function() {
 // click for NYT
 
 firstDropDown.onclick = function() {
-
 
 	// connect to NYT
 
@@ -91,7 +105,6 @@ firstDropDown.onclick = function() {
 	xhttpNYT.onerror = errorHandler;
 	xhttpNYT.onload = nytContent;
 
-
 	// populate with NYT data
 
 	function nytContent () {
@@ -104,11 +117,11 @@ firstDropDown.onclick = function() {
 	  for (i = 0; i < headline.length; i++) {
 	  	headline[i].innerText = nytData.results[i].title;
 	  	category[i].innerText = nytData.results[i].subsection;
-	  	img[i].src = nytData.results[i].multimedia[i].url;
+	  	img[i].src = nytData.results[i].multimedia[0].url;
 	  }
 
 	  	$('h3').click(function( event ){
-			$('#popUp').removeClass("loader hidden");
+			$('#popUp').removeClass("loader");
 			var elementIndex = $( 'h3' ).index( this ) ;
 			popUpHeadline.innerText = nytData.results[elementIndex].title;
 			popUpBlurb.innerText = nytData.results[elementIndex].abstract;
@@ -117,12 +130,10 @@ firstDropDown.onclick = function() {
 		});
 
 		$('.closePopUp').click(function(){
-			$('#popUp').addClass("loader hidden");
+			$('#popUp').addClass("loader");
 		});
 
-
 	}
-
 
 	//run function
 	nytContent();
@@ -132,7 +143,6 @@ firstDropDown.onclick = function() {
 // click for Daily Mail
 
 secondDropDown.onclick = function() {
-
 
 	// connect to DM
 
@@ -148,17 +158,17 @@ secondDropDown.onclick = function() {
 	xhttpDaily.onerror = errorHandler;
 	xhttpDaily.onload = dailyContent;
 
-
 	// populate with DM data
 
 	function dailyContent () {
 
 	  var dailyData = JSON.parse(xhttpDaily.responseText);
 	  dropDownTitle.innerText = 'Daily Mail';
+	  console.log(dailyData);
 
 	  for (i = 0; i < headline.length; i++) {
 	  	headline[i].innerText = dailyData.articles[i].title;
-	  	category[i].innerText = dailyData.articles[i].author;
+	  	category[i].innerText = dailyData.articles[i].source.name;
 	  	img[i].src = dailyData.articles[i].urlToImage;
 	  }
 
@@ -177,7 +187,6 @@ secondDropDown.onclick = function() {
 
 	}
 
-
 	//run function
 	dailyContent();
 
@@ -186,7 +195,6 @@ secondDropDown.onclick = function() {
 // click for BBC
 
 thirdDropDown.onclick = function() {
-
 
 	// connect to DM
 
@@ -202,13 +210,13 @@ thirdDropDown.onclick = function() {
 	xhttpBBC.onerror = errorHandler;
 	xhttpBBC.onload = bbcContent;
 
-
 	// populate with DM data
 
 	function bbcContent () {
 
 	  var bbcData = JSON.parse(xhttpBBC.responseText);
 	  dropDownTitle.innerText = 'BBC';
+	  console.log(bbcData);
 
 	  for (i = 0; i < articles.length; i++) {
 	  	headline[i].innerText = bbcData.articles[i].title;
@@ -231,12 +239,15 @@ thirdDropDown.onclick = function() {
 
 	}
 
-
 	//run function
 	bbcContent();
 
 };
 
 
+// search icon functionality
 
+$(" #search ").click(function(){
+    $( this ).toggleClass("active");
+});
 
