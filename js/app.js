@@ -63,7 +63,7 @@ window.onload = function() {
 	  for (i = 0; i < headline.length; i++) {
 	  	headline[i].innerText = nytData.results[i].title;
 	  	category[i].innerText = nytData.results[i].subsection;
-	  	img[i].src = nytData.results[i].multimedia[0].url;
+	  	img[i].src = nytData.results[i].multimedia[0].url; //this is the image that breaks the initial click
 	  }
 
 	  	$('h3').click(function( event ){
