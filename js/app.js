@@ -35,43 +35,41 @@ $( "#logo" ).click(function() {
 //load default content
 
 window.onload = function() {
-// connect to NYT
+// connect to Daily
 	
 	
-	var xhttpNYT = new XMLHttpRequest();
+		var xhttpDaily = new XMLHttpRequest();
 	
-	xhttpNYT.open('GET', 'https://api.nytimes.com/svc/topstories/v2/home.json?api-key=6a54f099ac5a4e3783ffa599adcf005e');
-	xhttpNYT.send();
+	xhttpDaily.open('GET', 'https://newsapi.org/v2/top-headlines?country=us&apiKey=db4c258e05684c09b6aff90d7e0a3b1b');
+	xhttpDaily.send();
 
 	function errorHandler() {
 	  console.log('something went wrong');
 	}
 
-	xhttpNYT.onerror = errorHandler;
-	xhttpNYT.onload = nytContent;
+	xhttpDaily.onerror = errorHandler;
+	xhttpDaily.onload = dailyContent;
 
+	// populate with DM data
 
-	// populate with NYT data
+	function dailyContent () {
 
-	function nytContent () {
-
-	  var nytData = JSON.parse(xhttpNYT.responseText);
-	  dropDownTitle.innerText = 'New York Times';
-
-	  console.log(nytData);
+	  var dailyData = JSON.parse(xhttpDaily.responseText);
+	  dropDownTitle.innerText = 'Daily Mail';
+	  console.log(dailyData);
 
 	  for (i = 0; i < headline.length; i++) {
-	  	headline[i].innerText = nytData.results[i].title;
-	  	category[i].innerText = nytData.results[i].subsection;
-	  	img[i].src = nytData.results[i].multimedia[0].url; //this is the image that breaks the initial click
+	  	headline[i].innerText = dailyData.articles[i].title;
+	  	category[i].innerText = dailyData.articles[i].source.name;
+	  	img[i].src = dailyData.articles[i].urlToImage;
 	  }
 
-	  	$('h3').click(function( event ){
+	  	 $('h3').click(function( event ){
 			$('#popUp').removeClass("loader hidden");
 			var elementIndex = $( 'h3' ).index( this ) ;
-			popUpHeadline.innerText = nytData.results[elementIndex].title;
-			popUpBlurb.innerText = nytData.results[elementIndex].abstract;
-			var newURL = nytData.results[elementIndex].short_url;
+			popUpHeadline.innerText = dailyData.articles[elementIndex].title;
+			popUpBlurb.innerText = dailyData.articles[elementIndex].description;
+			var newURL = dailyData.articles[elementIndex].url;
 			$(".popUpAction").prop("href", newURL);
 		});
 
@@ -82,7 +80,7 @@ window.onload = function() {
 	}
 
 	//run function
-	nytContent();
+	dailyContent();
 
 };
 
